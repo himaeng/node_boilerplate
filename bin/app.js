@@ -51,5 +51,9 @@ app.use(_bodyParser2.default.json({
 
 app.use('/api', (0, _api2.default)());
 
+app.server.listen(process.env.PORT || _config2.default.port);
+
+console.log('Started on port ' + app.server.address().port);
+
 exports.default = app;
 //# sourceMappingURL=app.js.map
