@@ -1,6 +1,6 @@
 {
   "name": "p4fcore",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Starter project for an ES6 RESTful Express API",
   "main": "dist",
   "scripts": {

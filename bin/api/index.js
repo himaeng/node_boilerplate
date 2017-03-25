@@ -15,6 +15,7 @@ exports.default = function () {
 		var data = format(req.query);
 		console.log('body get: ', req.body);
 		console.log('query get: ', req.query);
+		console.log('data get: ', data);
 
 		var _calTDEE = calTDEE(data),
 		    main_tdee = _calTDEE.main_tdee,
