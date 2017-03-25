@@ -4,55 +4,56 @@ import { Router } from 'express';
 export default () => {
 	let api = Router();
 
-	api.get('/we', (req, res) => {
+	api.get('/', (req, res) => {
 		const data = format(req.query);
-		console.log('body get: ', req.body);
 		console.log('query get: ', req.query);
 		console.log('data get: ', data);
+
 		const {
 			main_tdee,
 			energy_weight_loss,
-			loseweight
-
+			loseweight,
+			valCadio,
+			minHeartRate,
+			maxHeartRate,
+			cadioperweek,
+			//ต่อวัน
+			protein, // day_protein
+			cal_perday_protein,
+			div_perday_protein,
+			carb,
+			cal_perday_carbohydrate,
+			div_perday_carbohydrate,
+			fat,
+			cal_perday_fat,
+			div_perday_fat,
+			totalCalories, // รวมแคลลอรี่
+			// ต่อมื้อ
+			permeals_protein,
+			cal_permeals_protein,
+			div_permeals_protein,
+			permeals_carbohydrate,
+			cal_permeals_carbohydrate,
+			div_permeals_carbohydrate,
+			permeals_fat,
+			cal_permeals_fat,
+			div_permeals_fat,
+			totalCaloriesPerMeal //รวมแคลลอรี่
 		} = calTDEE(data);
 
-		res.json({
-			messages: [
-				{
-					text: `ข้อมูลส่วนตัว\nค่าพลังงานที่ทำให้น้ำหนักคงที่(TDEE) ${main_tdee}\nค่าพลังงานใหม่สำหรับเพิ่ม/ลดน้ำหนัก ${energy_weight_loss}\nน้ำหนักของคุณจะเพิ่ม/ลดสัปดาห์ละ ${loseweight}`
-				}
-			]
-		});
+		res.json(calTDEE(data));
+
+		// res.json({
+		// 	messages: [
+		// 		{
+		// 			text: `ข้อมูลส่วนตัว\nค่าพลังงานที่ทำให้น้ำหนักคงที่(TDEE) ${main_tdee}\nค่าพลังงานใหม่สำหรับเพิ่ม/ลดน้ำหนัก ${energy_weight_loss}\nน้ำหนักของคุณจะเพิ่ม/ลดสัปดาห์ละ ${loseweight}`
+		// 		}
+		// 	]
+		// });
 	});
 
-	api.get('/', (req, res) => {
+	api.get('/v', (req, res) => {
 		res.json({ version });
-	});
-
-	// perhaps expose some API metadata at the root
-	api.post('/', (req, res) => {
-		const data = format(req.body);
-		console.log('body: ', req.body);
-		console.log('query: ', req.query);
-		const {
-			main_tdee,
-			energy_weight_loss,
-			loseweight
-
-		} = calTDEE(data);
-
-		res.json({
-			messages: [
-				{
-					text: `
-						ข้อมูลส่วนตัว
-						ค่่่่่่่่าพลังงานที่ทำให้น้ำหนักคงที่(TDEE) ${main_tdee}
-						ค่าพลังงานใหม่สำหรับเพิ่ม/ลดน้ำหนัก ${energy_weight_loss}
-						น้ำหนักของคุณจะเพิ่ม/ลดสัปดาห์ละ ${loseweight}
-						`
-				}
-			]
-		});
 	});
 
 	return api;
@@ -96,7 +97,7 @@ const formatGoal = (goal) => {
 	switch (goal) {
 		case 'ลดน้ำหนัก':
 			return 'loseWeight';
-		case 'เพิ่มน้ำหนัก':
+		case 'เพิ่มกล้ามเนื้อ':
 			return 'muscleGain';
 	}
 }
@@ -164,12 +165,12 @@ function calNutrient(percentFat, weight, maintain, goal, goalOption) {
 
 function calTDEE({ gender, age, height, weight, percentFat, workoutFrequency, goal, goalOption, numOfMeal }) {
   const maintain = calMaintain(gender, weight, height, age, percentFat, workoutFrequency);
-	console.log('maintain: ', maintain);
+	//console.log('maintain: ', maintain);
 	const nutrients = calNutrient(percentFat, weight, maintain, goal, goalOption);
-	console.log('nutrients: ', nutrients);
+	//console.log('nutrients: ', nutrients);
 
 	const mainTDEE = (nutrients.protein * 4) + (Math.floor(((maintain - (nutrients.protein * 4) - (nutrients.fat * 9)) / 4)) * 4) + (nutrients.fat * 9);
-	console.log('mainTDEE: ', mainTDEE);
+	//console.log('mainTDEE: ', mainTDEE);
 
 	//รวมแคลอรี่
 	const totalCalories = (nutrients.protein * 4) + (nutrients.carb * 4) + (nutrients.fat * 9);
@@ -180,9 +181,9 @@ function calTDEE({ gender, age, height, weight, percentFat, workoutFrequency, go
 	const cal_perday_fat = nutrients.fat * 9;
 	const cal_perday_carbohydrate = nutrients.carb * 4;
 
-	const div_perday_protein = Math.round(cal_perday_protein / totalCalories, -2) * 100;
-	const div_perday_fat = Math.round(cal_perday_fat / totalCalories, -2) * 100;
-	const div_perday_carbohydrate = Math.round(cal_perday_carbohydrate / totalCalories, -2) * 100;
+	const div_perday_protein = Math.round((cal_perday_protein / totalCalories * 100));
+	const div_perday_fat = Math.round((cal_perday_fat / totalCalories * 100));
+	const div_perday_carbohydrate = Math.round((cal_perday_carbohydrate / totalCalories * 100));
 	
 	//ต่อมื้อ
 	const permeals_protein = Math.ceil(nutrients.protein / numOfMeal);
@@ -193,30 +194,39 @@ function calTDEE({ gender, age, height, weight, percentFat, workoutFrequency, go
 	const cal_permeals_fat = Math.ceil(cal_perday_fat / numOfMeal);
 	const cal_permeals_carbohydrate = Math.ceil(cal_perday_carbohydrate / numOfMeal);
 
-	const div_permeals_protein = Math.round(cal_permeals_protein / totalCaloriesPerMeal, -2) * 100;
-	const div_permeals_fat = Math.round(cal_permeals_fat / totalCaloriesPerMeal, -2) * 100;
-	const div_permeals_carbohydrate = Math.round(cal_permeals_carbohydrate / totalCaloriesPerMeal, -2) * 100;
+	const div_permeals_protein = Math.round(cal_permeals_protein / totalCaloriesPerMeal * 100);
+	const div_permeals_fat = Math.round(cal_permeals_fat / totalCaloriesPerMeal * 100);
+	const div_permeals_carbohydrate = Math.round(cal_permeals_carbohydrate / totalCaloriesPerMeal * 100);
 
-	//การคาร์ดิโอ และคาร์โบไฮเดตรต้องลด
-	let valCadio = Math.ceil((maintain * 10 / 100) / 2);
-	let valCarbohydrate = Math.ceil((maintain * 10 / 100) / 4 / 7 / 2);
-	
-	//น้ำหนักที่จะเพิ่มได้
-	let loseweight = Math.round(((mainTDEE * 10 / 100) * 0.000143 * 7),1);
-	
-	//ค่าพลังงานสำหรับเพิ่มกล้ามเนื้อ/น้ำหนัก
-	let energy_weight_loss = Math.floor(mainTDEE - (mainTDEE * 10 / 100));
+	let valCadio = 0; //การคาร์ดิโอ
+	let valCarbohydrate = 0; //คาร์โบไฮเดตรต้องลด
+	let loseweight = 0; //น้ำหนักที่จะ เพิ่ม/ลด ได้
+	let energy_weight_loss = 0; //ค่าพลังงานสำหรับเพิ่มกล้ามเนื้อ/น้ำหนัก
 
-	//แบบค่อยเป็นค่อยไป
-	if(goalOption === 'normal'){
-		valCadio = 0; 
-		valCarbohydrate = Math.ceil((maintain * 10 / 100) / 4 / 7);
-		
-		//น้ำหนักที่จะเพิ่มได้
-		loseweight = Math.round(((mainTDEE * 10 / 100) * 0.000143 * 7) * 10) / 10;
-		
-		//ค่าพลังงานสำหรับเพิ่มกล้ามเนื้อ/น้ำหนัก
-		energy_weight_loss = Math.floor((mainTDEE * 1.1));
+	if (goal === 'loseWeight') {
+		if (goalOption === 'normal') {
+			valCadio = Math.ceil((maintain * 10 / 100) / 2);
+			valCarbohydrate = Math.ceil((maintain * 10 / 100) / 4 / 7 / 2);
+			loseweight = Math.round(((mainTDEE * 10 / 100) * 0.000143 * 7) * 10) / 10;
+			energy_weight_loss = Math.floor(mainTDEE - (mainTDEE * 10 / 100));
+		} else {
+			valCadio = 200;
+			valCarbohydrate = 75;
+			loseweight = 0.5;
+			energy_weight_loss = mainTDEE - 500;
+		}
+	} else {
+		if (goalOption === 'normal') {
+			valCadio = 0; 
+			valCarbohydrate = Math.ceil((maintain * 10 / 100) / 4 / 7);
+			loseweight = Math.round(((mainTDEE * 10 / 100) * 0.000143 * 7));
+			energy_weight_loss = Math.floor((mainTDEE * 1.1));
+		} else {
+			valCadio = 0;
+			valCarbohydrate = 125;
+			loseweight = 0.5;
+			energy_weight_loss = mainTDEE + 500;
+		}
 	}
 
 	//อัตราการเต้นของหัวใจที่เหมาะสม
@@ -241,7 +251,7 @@ function calTDEE({ gender, age, height, weight, percentFat, workoutFrequency, go
     fat: nutrients.fat,
     cal_perday_fat: cal_perday_fat,
     div_perday_fat: div_perday_fat,
-    carb: nutrients.fat,
+    carb: nutrients.carb,
     cal_perday_carbohydrate: cal_perday_carbohydrate,
     div_perday_carbohydrate: div_perday_carbohydrate,
     permeals_protein: permeals_protein,
