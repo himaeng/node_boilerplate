@@ -41,15 +41,37 @@ export default () => {
 			totalCaloriesPerMeal //รวมแคลลอรี่
 		} = calTDEE(data);
 
-		res.json(calTDEE(data));
+		//res.json(calTDEE(data));
+		const word = (req.query.goal === 'เพิ่มกล้ามเนื้อ') ? 'เพิ่ม' : 'ลด';
 
-		// res.json({
-		// 	messages: [
-		// 		{
-		// 			text: `ข้อมูลส่วนตัว\nค่าพลังงานที่ทำให้น้ำหนักคงที่(TDEE) ${main_tdee}\nค่าพลังงานใหม่สำหรับเพิ่ม/ลดน้ำหนัก ${energy_weight_loss}\nน้ำหนักของคุณจะเพิ่ม/ลดสัปดาห์ละ ${loseweight}`
-		// 		}
-		// 	]
-		// });
+		res.json({
+			messages: [
+				{
+					text: `ผลการคำนวณ`
+				},
+				{
+					text: `เป้าหมาย: ${req.query.goal}\nค่าพลังงานที่ทำให้น้ำหนักคงที่(TDEE) ${main_tdee}\nค่าพลังงานใหม่สำหรับ${req.query.goal} ${energy_weight_loss}แคลอรี่\nน้ำหนักของคุณจะ${word}สัปดาห์ละ ${loseweight} กิโลกรัม`
+				},
+				{
+					text: `โปรแกรมคาร์ดิโอ`
+				},
+				{
+					text: `จำนวนเวลาที่คาร์ดิโอ ${valCadio} นาทีต่อสัปดาห์\nอัตราการเต้นของหัวใจ ${minHeartRate} - ${maxHeartRate} ครั้ง/นาที\nแคลลอรี่จากการคาร์ดิโอ/สัปดาห์ ${cadioperweek}`
+				},
+				{
+					text: `โปรแกรมอาหารต่อวัน`
+				},
+				{
+					text: `โปรตีน ปริมาณ ${protein} กรัม คิดเป็น ${cal_perday_protein} หรือ ${div_perday_protein} %\nคาร์โบไฮเดรต ปริมาณ ${carb} กรัม คิดเป็น ${cal_perday_carbohydrate} หรือ ${div_perday_carbohydrate} %\nไขมัน ปริมาณ ${fat} กรัม คิดเป็น ${cal_perday_fat} หรือ ${div_perday_fat} %`
+				},
+				{
+					text: `โปรแกรมอาหารต่อมื้อ`
+				},
+				{
+					text: `โปรตีน ปริมาณ ${permeals_protein} กรัม คิดเป็น ${cal_permeals_protein} หรือ ${div_permeals_protein} %\nคาร์โบไฮเดรต ปริมาณ ${permeals_carbohydrate} กรัม คิดเป็น ${cal_permeals_protein} หรือ ${div_permeals_protein} %\nไขมัน ปริมาณ ${permeals_fat} กรัม คิดเป็น ${cal_perday_fat} หรือ ${div_permeals_fat} %`
+				}
+			]
+		});
 	});
 
 	api.get('/v', (req, res) => {
