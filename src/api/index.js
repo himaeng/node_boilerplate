@@ -4,6 +4,31 @@ import { Router } from 'express';
 export default () => {
 	let api = Router();
 
+	api.get('/we', (req, res) => {
+		const data = format(req.query);
+		console.log('body get: ', req.body);
+		console.log('query get: ', req.query);
+		const {
+			main_tdee,
+			energy_weight_loss,
+			loseweight
+
+		} = calTDEE(data);
+
+		res.json({
+			messages: [
+				{
+					text: `
+						ข้อมูลส่วนตัว
+						ค่่่่่่่่าพลังงานที่ทำให้น้ำหนักคงที่(TDEE) ${main_tdee}
+						ค่าพลังงานใหม่สำหรับเพิ่ม/ลดน้ำหนัก ${energy_weight_loss}
+						น้ำหนักของคุณจะเพิ่ม/ลดสัปดาห์ละ ${loseweight}
+						`
+				}
+			]
+		});
+	});
+
 	api.get('/', (req, res) => {
 		res.json({ version });
 	});
@@ -11,7 +36,8 @@ export default () => {
 	// perhaps expose some API metadata at the root
 	api.post('/', (req, res) => {
 		const data = format(req.body);
-		console.log(data);
+		console.log('body: ', req.body);
+		console.log('query: ', req.query);
 		const {
 			main_tdee,
 			energy_weight_loss,

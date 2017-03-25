@@ -11,6 +11,23 @@ var _express = require('express');
 exports.default = function () {
 	var api = (0, _express.Router)();
 
+	api.get('/we', function (req, res) {
+		var data = format(req.query);
+		console.log('body get: ', req.body);
+		console.log('query get: ', req.query);
+
+		var _calTDEE = calTDEE(data),
+		    main_tdee = _calTDEE.main_tdee,
+		    energy_weight_loss = _calTDEE.energy_weight_loss,
+		    loseweight = _calTDEE.loseweight;
+
+		res.json({
+			messages: [{
+				text: '\n\t\t\t\t\t\t\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E2A\u0E48\u0E27\u0E19\u0E15\u0E31\u0E27\n\t\t\t\t\t\t\u0E04\u0E48\u0E48\u0E48\u0E48\u0E48\u0E48\u0E48\u0E48\u0E32\u0E1E\u0E25\u0E31\u0E07\u0E07\u0E32\u0E19\u0E17\u0E35\u0E48\u0E17\u0E33\u0E43\u0E2B\u0E49\u0E19\u0E49\u0E33\u0E2B\u0E19\u0E31\u0E01\u0E04\u0E07\u0E17\u0E35\u0E48(TDEE) ' + main_tdee + '\n\t\t\t\t\t\t\u0E04\u0E48\u0E32\u0E1E\u0E25\u0E31\u0E07\u0E07\u0E32\u0E19\u0E43\u0E2B\u0E21\u0E48\u0E2A\u0E33\u0E2B\u0E23\u0E31\u0E1A\u0E40\u0E1E\u0E34\u0E48\u0E21/\u0E25\u0E14\u0E19\u0E49\u0E33\u0E2B\u0E19\u0E31\u0E01 ' + energy_weight_loss + '\n\t\t\t\t\t\t\u0E19\u0E49\u0E33\u0E2B\u0E19\u0E31\u0E01\u0E02\u0E2D\u0E07\u0E04\u0E38\u0E13\u0E08\u0E30\u0E40\u0E1E\u0E34\u0E48\u0E21/\u0E25\u0E14\u0E2A\u0E31\u0E1B\u0E14\u0E32\u0E2B\u0E4C\u0E25\u0E30 ' + loseweight + '\n\t\t\t\t\t\t'
+			}]
+		});
+	});
+
 	api.get('/', function (req, res) {
 		res.json({ version: _package.version });
 	});
@@ -18,12 +35,13 @@ exports.default = function () {
 	// perhaps expose some API metadata at the root
 	api.post('/', function (req, res) {
 		var data = format(req.body);
-		console.log(data);
+		console.log('body: ', req.body);
+		console.log('query: ', req.query);
 
-		var _calTDEE = calTDEE(data),
-		    main_tdee = _calTDEE.main_tdee,
-		    energy_weight_loss = _calTDEE.energy_weight_loss,
-		    loseweight = _calTDEE.loseweight;
+		var _calTDEE2 = calTDEE(data),
+		    main_tdee = _calTDEE2.main_tdee,
+		    energy_weight_loss = _calTDEE2.energy_weight_loss,
+		    loseweight = _calTDEE2.loseweight;
 
 		res.json({
 			messages: [{
