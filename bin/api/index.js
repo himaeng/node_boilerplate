@@ -11,9 +11,14 @@ var _express = require('express');
 exports.default = function () {
 	var api = (0, _express.Router)();
 
+	api.get('/', function (req, res) {
+		res.json({ version: _package.version });
+	});
+
 	// perhaps expose some API metadata at the root
 	api.post('/', function (req, res) {
 		var data = format(req.body);
+		console.log(data);
 
 		var _calTDEE = calTDEE(data),
 		    main_tdee = _calTDEE.main_tdee,

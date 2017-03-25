@@ -4,10 +4,14 @@ import { Router } from 'express';
 export default () => {
 	let api = Router();
 
+	api.get('/', (req, res) => {
+		res.json({ version });
+	});
+
 	// perhaps expose some API metadata at the root
 	api.post('/', (req, res) => {
 		const data = format(req.body);
-
+		console.log(data);
 		const {
 			main_tdee,
 			energy_weight_loss,
