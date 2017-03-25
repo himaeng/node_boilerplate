@@ -241,7 +241,7 @@ function calTDEE({ gender, age, height, weight, percentFat, workoutFrequency, go
 		if (goalOption === 'normal') {
 			valCadio = 0; 
 			valCarbohydrate = Math.ceil((maintain * 10 / 100) / 4 / 7);
-			loseweight = Math.round(((mainTDEE * 10 / 100) * 0.000143 * 7));
+			loseweight = Math.round(((mainTDEE * 10 / 100) * 0.000143 * 7) * 10) / 10;
 			energy_weight_loss = Math.floor((mainTDEE * 1.1));
 		} else {
 			valCadio = 0;
