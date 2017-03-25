@@ -101,10 +101,10 @@ var format = function format(_ref) {
 
 	return {
 		gender: gender,
-		age: age,
-		height: height,
-		weight: weight,
-		percentFat: fat,
+		age: parseInt(age),
+		height: parseInt(height),
+		weight: parseInt(weight),
+		percentFat: parseInt(fat),
 		workoutFrequency: workoutFrequency,
 		goal: goalFormated,
 		goalOption: goalOption,
