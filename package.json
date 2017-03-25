@@ -4,7 +4,7 @@
   "description": "Starter project for an ES6 RESTful Express API",
   "main": "dist",
   "scripts": {
-    "dev": "npm run build && node bin/app.js",
+    "dev": "nodemon src/app.js --exec babel-node --presets es2015,stage-0",
     "build": "rm -rf bin && babel src -s -D -d bin --presets es2015,stage-0",
     "start": "node bin/app.js",
     "test": "eslint src",
