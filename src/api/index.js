@@ -9,5 +9,9 @@ export default () => {
 		res.json({ version });
 	});
 
+	api.get('/v1/product', (req, res) => {
+		res.json(inventory);
+	})
+
 	return api;
 }
